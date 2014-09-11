@@ -4,7 +4,7 @@ purgo
 Utility to dynamically reconfigure /etc/resolv.conf based on performance or
 availability.
 
-Backgroud
+Background
 ---------
 In August of 2014 Charter Communications suffered a DNS outage, at least from
 my perspective.  I used google's public DNS services to ride out the outage and
