@@ -87,16 +87,16 @@ class ResolveConf(object):
         self._ns = list(set(self._ns))
 
     def ns_get(self):
-        return self._ns
+        return list(self._ns)
 
     def commented_out_ns_get(self):
-        return self._commented_out_ns
+        return list(self._commented_out_ns)
 
     def commented_out_ns_set(self, name_servers):
-        self._commented_out_ns = name_servers
+        self._commented_out_ns = list(name_servers)
 
     def ns_set(self, name_servers):
-        self._ns = name_servers
+        self._ns = list(name_servers)
 
     def save(self):
         with open(self._file, 'w') as f:
@@ -219,6 +219,7 @@ if __name__ == '__main__':
             for server_ip in dns_server_list:
                 all_dns_servers[server_ip] = dict(provider=provider, avg=0.0)
 
+        starting_name_servers = resolver_config.ns_get()
         all_resolv_conf = resolver_config.ns_get()
         all_resolv_conf.extend(resolver_config.commented_out_ns_get())
 
@@ -258,7 +259,10 @@ if __name__ == '__main__':
 
         # Build the appropriate entries and write out the resolv.conf file
         resolver_config.commented_out_ns_set(isp_ns)
-        resolver_config.save()
+
+        # Don't write out file if nothing has changed
+        if starting_name_servers != resolver_config.ns_get():
+            resolver_config.save()
     else:
         sys.stderr.write("Config file '%s' not found!\n" % (args.c))
         sys.exit(1)
